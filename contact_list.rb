@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative 'contact'
+require_relative 'phone'
 
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
 class ContactList
@@ -108,8 +109,20 @@ class ContactList
   end
 end
 
+# Contact.create('test3', 'test3@test.com')
 
-# ContactList.new.start()
+# contact = Contact.find(2)
+# contact.add_phone('6045567493', 'mobile')
+# p Contact.all
+# contact.name = 'test44'
+# contact.email = 'test44@mail.com'
+# contact.save
+# contact.destroy
+# p Contact.all
+
+# p Contact.has_email?('test22@test.com')
+
+ContactList.new.start()
 
 
 
