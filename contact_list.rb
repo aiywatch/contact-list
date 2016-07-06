@@ -9,18 +9,7 @@ class ContactList
   attr_accessor :contact_list
   
   def initialize
-    case ARGV[0]
-    when "new"
-      @contact_list = []
-    when "list"
-      @contact_list = Contact.all
-    when "show"
-      @contact_list = Contact.find(ARGV[1])
-    when "search"
-      @contact_list = Contact.search(ARGV[1])
-    else
-      @contact_list = []
-    end
+    @contact_list = []
       
   end
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
@@ -34,32 +23,31 @@ class ContactList
       email = $stdin.gets.strip
       raise ArgumentError, "Name and Email must have value" if name.empty? or email.empty?
       phones = []
-      while true
-        puts "Optional phone number ('yes' to continue)"
-        opt = $stdin.gets.strip
-        break if opt != 'yes'
-        puts "home/work/mobile"
-        opt2 = $stdin.gets.strip
-        raise ArgumentError, "invalid input" if opt2 != 'home' and opt2 != 'work' and opt2 != 'mobile'
-        puts "enter phone number"
-        phone = $stdin.gets.strip
-        phones << opt2 + ':' + phone
-      end
-      p phones
-      Contact.create(name, email, phones)
-      
+      # while true
+      #   puts "Optional phone number ('yes' to continue)"
+      #   opt = $stdin.gets.strip
+      #   break if opt != 'yes'
+      #   puts "home/work/mobile"
+      #   opt2 = $stdin.gets.strip
+      #   raise ArgumentError, "invalid input" if opt2 != 'home' and opt2 != 'work' and opt2 != 'mobile'
+      #   puts "enter phone number"
+      #   phone = $stdin.gets.strip
+      #   phones << opt2 + ':' + phone
+      # end
+      # p phones
+      @contact_list << Contact.create(name: name, email: email)
+      display_contact
     when "list"
-      all_contact = Contact.all
+      @contact_list = Contact.all
       display_contact
 
     when "show"
-      puts "show"
-
-      puts "#{@contact_list.name} and #{contact_list.email}"
-      
+      @contact_list << Contact.find(ARGV[1].to_i)
+      display_contact
 
     when "search"
       raise ArgumentError, "Must have exactly 2 argument" if ARGV.size != 2
+      @contact_list = Contact.where('name ~* ? OR email ~* ?', ARGV[1], ARGV[1])
       display_contact
       # @contact_list.each_with_index { |contact, i| puts "#{contact.name} (#{contact.email})" }
       # puts "---\n#{@contact_list.size} record total"
@@ -77,7 +65,7 @@ class ContactList
       5.times do 
         contact = @contact_list[i]
         i += 1
-        puts "#{i}: #{contact.name} (#{contact.email})"
+        puts "#{contact.id}: #{contact.name} (#{contact.email})"
         break if @contact_list[i].nil?  
       end
       break if @contact_list[i].nil?  
@@ -89,24 +77,6 @@ class ContactList
     puts "#{i} records total"
   end
 
-  def serialize(phones)
-    phones.join("::")
-    # PHONE_DICT.each do |key, value|
-    #   p key
-    #   p value
-    #   str.gsub!(key, value)
-    # end
-    # str
-  end
-
-  def deserialize(phones)
-    # PHONE_DICT.each do |key, value|
-    #   p key
-    #   p value
-    #   phones.gsub!(value, key)
-    # end
-    phones.split('::')
-  end
 end
 
 # Contact.create('test3', 'test3@test.com')
@@ -124,10 +94,6 @@ end
 
 ContactList.new.start()
 
+# p Contact.all
 
 
-
-# x = "a:123:b:456"
-# #result = ['a'=>123, 'b'=>456]
-
-# result = 
